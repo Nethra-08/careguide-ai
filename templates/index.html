@@ -509,12 +509,26 @@ CareGuide Clinical Triage System • For emergency assistance, please call emerg
 </footer>
 <script>
 const departmentsCatalog = [
-{ name: "Cardiology", desc: "Deals with conditions affecting the heart and blood vessels." },
-{ name: "Neurology", desc: "Brain, spine, nervous system, chronic migraines, and vertigo." },
-{ name: "Orthopedics", desc: "Bones, joints, ligament injuries, and musculoskeletal pain." },
-{ name: "ENT", desc: "Ear pain, sinus pressure, throat infections, and hearing problems." },
-{ name: "Gastroenterology", desc: "Stomach issues, acid reflux, and digestive conditions." },
-{ name: "Dermatology", desc: "Skin rashes, hives, allergic eczema, and nail disorders." }
+    { name: "Cardiology", desc: "Heart and blood vessel conditions, chest pain, and heart-related symptoms." },
+    { name: "Neurology", desc: "Brain, spinal cord, nerves, headaches, seizures, and neurological symptoms." },
+    { name: "Orthopedics", desc: "Bones, joints, muscles, ligaments, fractures, and musculoskeletal problems." },
+    { name: "ENT", desc: "Ear, nose, throat, hearing problems, sinus issues, and voice-related conditions." },
+    { name: "Gastroenterology", desc: "Stomach, intestine, liver, digestive problems, and acid reflux." },
+    { name: "Dermatology", desc: "Skin, hair, nails, rashes, itching, and other skin conditions." },
+    { name: "Vascular Surgery", desc: "Conditions affecting blood vessels, including varicose veins and circulation problems." },
+    { name: "General Medicine", desc: "General health concerns, common illnesses, fever, and initial medical evaluation." },
+    { name: "Pulmonology", desc: "Lungs and respiratory conditions, breathing difficulties, and persistent cough." },
+    { name: "Ophthalmology", desc: "Eye problems, vision changes, eye pain, and other eye conditions." },
+    { name: "Urology", desc: "Urinary system and male reproductive health conditions." },
+    { name: "Gynecology", desc: "Women's reproductive health, menstrual problems, and related conditions." },
+    { name: "Pediatrics", desc: "Medical care for infants, children, and adolescents." },
+    { name: "Psychiatry", desc: "Mental health concerns, mood disorders, anxiety, and related conditions." },
+    { name: "Endocrinology", desc: "Hormonal conditions, thyroid disorders, diabetes, and metabolic problems." },
+    { name: "Nephrology", desc: "Kidney diseases, kidney function, and related urinary health problems." },
+    { name: "Oncology", desc: "Evaluation and treatment of cancers and cancer-related conditions." },
+    { name: "Rheumatology", desc: "Autoimmune diseases, arthritis, and inflammatory joint conditions." },
+    { name: "Dentistry", desc: "Teeth, gums, oral health, and dental problems." },
+    { name: "Pulmonology", desc: "Respiratory diseases, lung conditions, asthma, and breathing problems." }
 ];
 const commonSymptomsList = [
 "ear pain",
@@ -525,7 +539,12 @@ const commonSymptomsList = [
 "severe headache",
 "knee joint pain",
 "stomach ache",
-"skin rash and itching"
+"skin rash and itching",
+"varicose veins",
+"leg swelling",
+"persistent cough",
+"eye pain",
+"tooth pain"
 ];
 function navigateTo(viewId) {
 document.querySelectorAll('.page-view').forEach(view => {
