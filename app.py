@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 from google import genai
 import os
@@ -13,7 +13,7 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 @app.route("/")
 def home():
-    return "CareGuide AI Backend is Running!"
+    return render_template("index.html")
 
 
 @app.route("/analyze", methods=["POST"])

@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareGuide: Which Department Should I Visit?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+:root {
+--primary: #0e7c7b;
+--primary-dark: #0a5c5b;
+--primary-light: #e6f4f4;
+--accent: #c2578a;
+--bg: #f8fafc;
+--surface: #ffffff;
+--border: #e2e8f0;
+--text-main: #0f172a;
+--text-muted: #64748b;
+--radius: 16px;
+}
+{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body {
+background-color: var(--bg);
+color: var(--text-main);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+.container {
+max-width: 960px;
+margin: 0 auto;
+padding: 0 1.5rem;
+width: 100%;
+}
+/* Navigation */
+.navbar {
+background: var(--surface);
+border-bottom: 1px solid var(--border);
+padding: 1rem 0;
+}
+.nav-inner {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.brand {
+font-size: 1.3rem;
+font-weight: 800;
+color: var(--primary);
+text-decoration: none;
+display: flex;
+align-items: center;
+gap: 0.5rem;
+cursor: pointer;
+}
+.nav-links {
+display: flex;
+gap: 0.75rem;
+list-style: none;
+}
+.nav-link {
+background: transparent;
+border: none;
+font-size: 0.95rem;
+font-weight: 600;
+color: var(--text-muted);
+padding: 0.5rem 1rem;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.2s ease;
+}
+.nav-link:hover, .nav-link.active {
+color: var(--primary);
+background: var(--primary-light);
+}
+/* Page Visibility Switches */
+.page-view {
+display: none;
+animation: fadeIn 0.25s ease-out;
+}
+.page-view.active {
+display: block;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+/* Hero Section */
+.hero {
+background: var(--primary);
+color: white;
+padding: 3.5rem 0;
+}
+.hero-inner {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 2rem;
+}
+.hero h1 {
+font-size: 2.5rem;
+font-weight: 800;
+line-height: 1.2;
+margin-bottom: 0.8rem;
+}
+.hero p {
+font-size: 1.15rem;
+opacity: 0.9;
+}
+.hero-art svg {
+width: 140px;
+height: 140px;
+filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+}
+/* Steps Section */
+.steps {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+gap: 1.25rem;
+margin: 2.5rem 0;
+}
+.step-btn {
+display: flex;
+align-items: center;
+gap: 1rem;
+background: var(--surface);
+border: 2px solid var(--border);
+padding: 1.4rem;
+border-radius: var(--radius);
+color: var(--text-main);
+font-weight: 700;
+cursor: pointer;
+text-align: left;
+font-size: 1.05rem;
+transition: all 0.2s ease;
+}
+.step-btn:hover {
+border-color: var(--primary);
+transform: translateY(-2px);
+box-shadow: 0 8px 20px rgba(14, 124, 123, 0.1);
+}
+.step-btn.primary-step {
+border-color: var(--primary);
+background: var(--primary-light);
+color: var(--primary-dark);
+}
+.step-icon {
+font-size: 1.7rem;
+}
+/* Buttons */
+.btn-row {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+}
+.btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 0.95rem;
+font-weight: 700;
+padding: 0.8rem 1.6rem;
+border-radius: 12px;
+cursor: pointer;
+border: none;
+transition: all 0.2s ease;
+text-decoration: none;
+}
+.btn-primary {
+background: var(--primary);
+color: #ffffff;
+}
+.btn-primary:hover {
+background: var(--primary-dark);
+}
+.btn-secondary {
+background: #ffffff;
+border: 1px solid var(--border);
+color: var(--text-main);
+}
+.btn-secondary:hover {
+background: #f1f5f9;
+}
+/* Stats */
+.stats {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+gap: 1.25rem;
+margin-bottom: 3rem;
+}
+.stat {
+background: var(--surface);
+border: 1px solid var(--border);
+padding: 1.5rem;
+border-radius: var(--radius);
+text-align: center;
+color: var(--text-muted);
+font-size: 0.9rem;
+}
+.stat strong {
+display: block;
+font-size: 2rem;
+color: var(--primary);
+font-weight: 800;
+margin-bottom: 0.25rem;
+}
+/* Panel Card */
+.panel {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: var(--radius);
+padding: 2.2rem;
+margin-bottom: 2.5rem;
+}
+.field-label {
+display: block;
+font-size: 0.95rem;
+font-weight: 700;
+color: var(--text-main);
+margin-bottom: 0.5rem;
+}
+.symptom-textarea {
+width: 100%;
+min-height: 110px;
+background: #f8fafc;
+border: 1.5px solid var(--border);
+border-radius: 12px;
+padding: 1rem 1.2rem;
+font-size: 1rem;
+color: var(--text-main);
+line-height: 1.6;
+outline: none;
+resize: vertical;
+transition: border-color 0.2s;
+}
+.symptom-textarea:focus {
+background: #ffffff;
+border-color: var(--primary);
+}
+/* Symptom Grid */
+.symptom-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+gap: 0.85rem;
+margin: 1rem 0;
+}
+.symptom-item {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+background: #ffffff;
+border: 1.5px solid var(--border);
+padding: 1rem;
+border-radius: 12px;
+cursor: pointer;
+user-select: none;
+font-weight: 600;
+font-size: 0.95rem;
+transition: all 0.2s;
+}
+.symptom-item:hover {
+border-color: #94a3b8;
+}
+.symptom-item.selected {
+background: var(--primary-light);
+border-color: var(--primary);
+color: var(--primary-dark);
+}
+.symptom-item input {
+display: none;
+}
+/* Department Directory Display */
+.section-title {
+font-size: 1.6rem;
+font-weight: 800;
+margin-bottom: 1.2rem;
+}
+.dept-strip {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 1rem;
+margin-bottom: 1.5rem;
+}
+.dept-card {
+background: var(--surface);
+border: 1px solid var(--border);
+padding: 1.3rem;
+border-radius: var(--radius);
+transition: all 0.2s ease;
+}
+.dept-card:hover {
+border-color: var(--primary);
+transform: translateY(-2px);
+}
+.dept-card h3 {
+font-size: 1.1rem;
+color: var(--primary);
+margin-bottom: 0.4rem;
+}
+.dept-card p {
+color: var(--text-muted);
+font-size: 0.88rem;
+line-height: 1.5;
+}
+/* Result Card */
+.result-card {
+background: var(--surface);
+border: 1px solid var(--border);
+border-radius: 20px;
+padding: 2.5rem;
+margin: 1.5rem 0;
+box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+}
+.field-group {
+margin-bottom: 1.75rem;
+}
+.res-label {
+display: block;
+font-size: 0.8rem;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+font-weight: 800;
+color: var(--text-muted);
+margin-bottom: 0.4rem;
+}
+#department {
+font-size: 2rem;
+font-weight: 800;
+color: var(--primary);
+margin: 0;
+}
+#urgency {
+display: inline-block;
+font-size: 0.85rem;
+font-weight: 800;
+padding: 0.35rem 0.9rem;
+border-radius: 100px;
+text-transform: uppercase;
+margin: 0;
+}
+.badge-high { background: #fee2e2; color: #dc2626; }
+.badge-moderate, .badge-medium { background: #fef3c7; color: #b45309; }
+.badge-routine, .badge-low { background: #dcfce7; color: #15803d; }
+#explanation {
+font-size: 1.05rem;
+line-height: 1.7;
+color: var(--text-main);
+white-space: pre-line;
+margin: 0;
+}
+.next-step-box {
+background: var(--primary-light);
+border-left: 4px solid var(--primary);
+padding: 1rem 1.25rem;
+border-radius: 0 12px 12px 0;
+}
+#nextStep {
+font-size: 1rem;
+font-weight: 600;
+color: var(--primary-dark);
+margin: 0;
+}
+.center { text-align: center; }
+footer {
+margin-top: auto;
+background: #ffffff;
+border-top: 1px solid var(--border);
+padding: 2rem 0;
+text-align: center;
+color: var(--text-muted);
+font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+<!-- Header -->
+<header class="navbar" id="nav">
+<div class="container nav-inner">
+<div class="brand" onclick="navigateTo('home')">
+<span>🏥</span> CareGuide
+</div>
+<ul class="nav-links">
+<li><button type="button" class="nav-link active" data-nav="home" onclick="navigateTo('home')">Home</button></li>
+<li><button type="button" class="nav-link" data-nav="symptoms" onclick="navigateTo('symptoms')">Pick Symptoms</button></li>
+<li><button type="button" class="nav-link" data-nav="departments" onclick="navigateTo('departments')">Departments</button></li>
+</ul>
+</div>
+</header>
+<!-- VIEW 1: HOME PAGE -->
+<div id="view-home" class="page-view active">
+<section class="hero">
+<div class="container hero-inner">
+<div>
+<h1>Not sure which doctor to see?</h1>
+<p>Pick your symptoms below. We point you to the right department.</p>
+</div>
+<div class="hero-art" aria-hidden="true">
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="160" height="160" rx="36" fill="#fff"/>
+<rect x="82" y="46" width="36" height="88" rx="10" fill="#0e7c7b"/>
+<rect x="56" y="72" width="88" height="36" rx="10" fill="#0e7c7b"/>
+<polyline points="34,152 70,152 82,134 98,168 112,144 124,152 166,152" fill="none" stroke="#c2578a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+</div>
+</section>
+<main class="container" style="margin-top: 2rem;">
+<!-- Central Action Steps -->
+<div class="steps">
+<button type="button" class="step-btn primary-step" onclick="navigateTo('symptoms')">
+<span class="step-icon">👆</span>
+<span><strong>Pick symptoms</strong></span>
+</button>
+<button type="button" class="step-btn" onclick="navigateTo('departments')">
+<span class="step-icon">🏥</span>
+<span>Browse departments</span>
+</button>
+</div>
+<div class="stats">
+<div class="stat"><strong id="statDepts">All</strong>Departments</div>
+<div class="stat"><strong id="statSymptoms">AI</strong>Powered Triage</div>
+<div class="stat"><strong>24/7</strong>Emergency alerts</div>
+</div>
+<section style="margin-bottom: 3rem;">
+<h2 class="section-title">Popular departments</h2>
+<div class="dept-strip" id="homeDepts"></div>
+<p class="center"><button type="button" class="btn btn-secondary" onclick="navigateTo('departments')">See all departments</button></p>
+</section>
+</main>
+</div>
+<!-- VIEW 2: SYMPTOMS SELECTION -->
+<div id="view-symptoms" class="page-view">
+<main class="container" style="padding-top: 2.5rem; padding-bottom: 3rem;">
+<h1>Describe & Select Your Symptoms</h1>
+<p style="color: #64748b; margin: 0.5rem 0 1.5rem;">Enter what you are experiencing so we can route you to the correct specialist.</p>
+<div class="panel">
+<label class="field-label" for="userSymptomInput">1. Type your symptoms (in your own words):</label>
+<textarea
+id="userSymptomInput"
+class="symptom-textarea"
+placeholder="e.g., ear pain, blocked ear, difficulty hearing"
+></textarea>
+<label class="field-label" style="margin-top: 1.5rem;">2. Or select any matching common symptoms:</label>
+<div class="symptom-grid" id="symptomGridContainer">
+<!-- Rendered by JavaScript -->
+</div>
+<div class="btn-row" style="margin-top: 2rem;">
+<button type="button" class="btn btn-primary" id="analyzeBtn" onclick="requestAnalysis()">Analyze & Find Department →</button>
+<button type="button" class="btn btn-secondary" onclick="navigateTo('home')">Back to Home</button>
+</div>
+</div>
+</main>
+</div>
+<!-- VIEW 3: RESULT SECTION -->
+<div id="view-result" class="page-view">
+<main class="container" style="padding-top: 2.5rem; padding-bottom: 3rem;">
+<div class="result-card">
+<!-- 1. Urgency Level -->
+<div class="field-group">
+<span class="res-label">Urgency Level</span>
+<p id="urgency" class="badge-moderate">Evaluating...</p>
+</div>
+<!-- 2. Recommended Department -->
+<div class="field-group">
+<span class="res-label">Recommended Department</span>
+<p id="department">Department Name</p>
+</div>
+<!-- 3. Why This Department -->
+<div class="field-group">
+<span class="res-label">Why This Department</span>
+<p id="explanation"></p>
+</div>
+<!-- 4. Recommended Action -->
+<div class="field-group">
+<span class="res-label">Recommended Action</span>
+<div class="next-step-box">
+<p id="nextStep"></p>
+</div>
+</div>
+<div class="btn-row" style="margin-top: 2rem;">
+<button type="button" class="btn btn-secondary" onclick="navigateTo('symptoms')">← Re-select Symptoms</button>
+<button type="button" class="btn btn-primary" onclick="navigateTo('departments')">Explore All Departments</button>
+</div>
+</div>
+</main>
+</div>
+<!-- VIEW 4: DEPARTMENTS DIRECTORY -->
+<div id="view-departments" class="page-view">
+<main class="container" style="padding-top: 2.5rem; padding-bottom: 3rem;">
+<h1>Hospital Department Directory</h1>
+<p style="color: #64748b; margin: 0.5rem 0 2rem;">Overview of clinical units available for patient consultations.</p>
+<div class="dept-strip" id="fullDeptsContainer">
+<!-- Rendered by JavaScript -->
+</div>
+<div style="margin-top: 2rem;">
+<button type="button" class="btn btn-secondary" onclick="navigateTo('home')">← Back to Home</button>
+</div>
+</main>
+</div>
+<footer id="footer">
+<div class="container">
+CareGuide Clinical Triage System • For emergency assistance, please call emergency services immediately.
+</div>
+</footer>
+<script>
+const departmentsCatalog = [
+{ name: "Cardiology", desc: "Deals with conditions affecting the heart and blood vessels." },
+{ name: "Neurology", desc: "Brain, spine, nervous system, chronic migraines, and vertigo." },
+{ name: "Orthopedics", desc: "Bones, joints, ligament injuries, and musculoskeletal pain." },
+{ name: "ENT", desc: "Ear pain, sinus pressure, throat infections, and hearing problems." },
+{ name: "Gastroenterology", desc: "Stomach issues, acid reflux, and digestive conditions." },
+{ name: "Dermatology", desc: "Skin rashes, hives, allergic eczema, and nail disorders." }
+];
+const commonSymptomsList = [
+"ear pain",
+"blocked ear",
+"difficulty hearing",
+"chest pain",
+"shortness of breath",
+"severe headache",
+"knee joint pain",
+"stomach ache",
+"skin rash and itching"
+];
+function navigateTo(viewId) {
+document.querySelectorAll('.page-view').forEach(view => {
+view.classList.remove('active');
+});
+const target = document.getElementById(`view-${viewId}`);
+if (target) {
+target.classList.add('active');
+}
+document.querySelectorAll('.nav-link').forEach(btn => {
+btn.classList.toggle('active', btn.getAttribute('data-nav') === viewId);
+});
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toggleSymptomChip(element, text) {
+element.classList.toggle('selected');
+const textarea = document.getElementById('userSymptomInput');
+const selected = Array.from(document.querySelectorAll('.symptom-item.selected'))
+.map(el => el.getAttribute('data-val'));
+textarea.value = selected.join(', ');
+}
+function initializeUI() {
+const homeDepts = document.getElementById('homeDepts');
+if (homeDepts) {
+homeDepts.innerHTML = departmentsCatalog.slice(0, 4).map(d => `
+<div class="dept-card">
+<h3>${d.name}</h3>
+<p>${d.desc}</p>
+</div>
+`).join('');
+}
+const fullDepts = document.getElementById('fullDeptsContainer');
+if (fullDepts) {
+fullDepts.innerHTML = departmentsCatalog.map(d => `
+<div class="dept-card">
+<h3>${d.name}</h3>
+<p>${d.desc}</p>
+</div>
+`).join('');
+}
+const symptomGrid = document.getElementById('symptomGridContainer');
+if (symptomGrid) {
+symptomGrid.innerHTML = commonSymptomsList.map(sym => `
+<div class="symptom-item" data-val="${sym}" onclick="toggleSymptomChip(this, '${sym}')">
+<span>+ ${sym}</span>
+</div>
+`).join('');
+}
+}
+/* ==========================================================================
+FLASK API CALL (POST /analyze)
+========================================================================== */
+async function requestAnalysis() {
+const textarea = document.getElementById('userSymptomInput');
+const symptomsText = textarea.value.trim();
+if (!symptomsText) {
+alert("Please enter or select at least one symptom.");
+return;
+}
+const analyzeBtn = document.getElementById('analyzeBtn');
+analyzeBtn.disabled = true;
+analyzeBtn.textContent = "AI Analyzing...";
+try {
+const response = await fetch("/analyze", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+symptoms: symptomsText
+})
+});
+if (!response.ok) {
+throw new Error(`Server status: ${response.status}`);
+}
+const result = await response.json();
+// Parse nested JSON string: { "result": "{ ... }" }
+let aiData;
+if (typeof result.result === "string") {
+aiData = JSON.parse(result.result);
+} else {
+aiData = result.result || result;
+}
+// 1. Recommended Department
+document.getElementById("department").textContent = aiData.department || "General Medicine";
+// 2. Urgency Level
+const urgencyEl = document.getElementById("urgency");
+const urgencyVal = aiData.urgency || "Moderate";
+urgencyEl.textContent = urgencyVal;
+urgencyEl.className = `badge-${urgencyVal.toLowerCase()}`;
+// 3. Why This Department (Reasons bullet points)
+const explanationEl = document.getElementById("explanation");
+if (Array.isArray(aiData.reasons)) {
+    explanationEl.textContent = aiData.reasons
+    .map(r => `• ${r}`)
+    .join('\n');
+ 
+} else {
+explanationEl.textContent = aiData.reasons || "Assessment complete.";
+}
+// 4. Recommended Action
+document.getElementById("nextStep").textContent = aiData.recommendation || "Consult with a medical specialist.";
+// Navigate only upon real backend result
+navigateTo('result');
+} catch (error) {
+console.error("Backend Error:", error);
+alert("Could not connect to Flask backend! Please ensure your Flask server (python app.py) is running on port 5000.");
+} finally {
+analyzeBtn.disabled = false;
+analyzeBtn.textContent = "Analyze & Find Department →";
+}
+}
+document.addEventListener("DOMContentLoaded", initializeUI);
+</script>
+</body>
+</html>
